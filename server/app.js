@@ -32,7 +32,7 @@ app.get('/video', (req, res) => {
     } else {
         videoPath = '../public/' + videoFile;
     }
-    console.log("A");
+    console.log("A " + process.env.NODE_ENV);
     const videoSize = fs.statSync(videoPath, {}).size;
 
     console.log("B " + videoSize);
