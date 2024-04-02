@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
     res.send("test");
 })
 
-app.get('/video', async (req, res) => {
+app.get('/video', (req, res) => {
     const videoFile = 'Mindful_Consumer_Podcast_Ep3video.mp4';
     let videoPath = '';
     if (process.env.NODE_ENV == "production") {
@@ -32,7 +32,7 @@ app.get('/video', async (req, res) => {
     } else {
         videoPath = '../public/' + videoFile;
     }
-    const videoSize = fs.statSync(videoPath).size;
+    const videoSize = fs.statSync(videoPath, {}).size;
 
     const range = req.headers.range;
     if (range) {
