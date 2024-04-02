@@ -36,12 +36,13 @@ app.get('/video', (req, res) => {
     const videoSize = fs.statSync(videoPath).size;
 
     console.log("B " + videoSize);
+    const MAX_CHUNK = 10 ** 6; // 1 MB
     const range = req.headers.range;
     if (range) {
         console.log("C");
         const parts = range.replace(/bytes=/, '').split('-');
         const start = parseInt(parts[0], 10);
-        const end = parts[1] ? parseInt(parts[1], 10) : videoSize - 1;
+        const end = Math.min(start + MAX_CHUNK, videoSize - 1);
         const chunksize = end - start + 1;
 
         const head = {
