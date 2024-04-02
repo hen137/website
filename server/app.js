@@ -24,24 +24,42 @@ app.get("/", (req, res) => {
     res.send("test");
 })
 
-app.get('/video', (req, res) => {
-    const videoFile = 'Mindful_Consumer_Podcast_Ep3video.mp4';
-    let videoPath = '';
-    
-    console.log(process.env.NODE_ENV)
-    if (process.env.NODE_ENV == "production") {
-        videoPath = './build/' + videoFile;
-    } else {
-        videoPath = '../public/' + videoFile;
+app.get('/video', async (req, res) => {
+    const range = req.headers.range;
+
+    if (!range) {
+        res.status(400).send("Requires Range Header");
+        return;
     }
 
-    console.log(videoPath + " " + fs.existsSync(videoPath));
-    
-    const headers = {
-        'Content-Type': 'video/mp4'
-    }    
-    res.writeHead(206, headers)
-    fs.createReadStream(videoPath).pipe(res);
+    try {
+        const videoFile = 'Mindful_Consumer_Podcast_Ep3video.mp4';
+        let videoPath = '';
+        if (process.env.NODE_ENV == "production") {
+            videoPath = './build/' + videoFile;
+        } else {
+            videoPath = '../public/' + videoFile;
+        }
+        const videoSize = await fs.stat(videoPath).size;
+
+        const start = Number(range.replace(/ytes=/, '').split('-')[0]);
+        const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+
+        const contentLength = end - start + 1;
+        const headers = {
+            'Content-Range': `bytes ${start}-${end}/${videoSize}`,
+            'Accept-Ranges': 'bytes',
+            'Content-Length': contentLength,
+            'Content-Type': 'video/mp4',
+        };
+        res.writeHead(206, headers)
+        fs.createReadStream(videoPath).pipe(res);
+    } catch (err) {
+        console.error(err);
+        res.sendStatus(500);
+    }
+
+
 })
 
 app.listen(PORT, () => console.log("Server started"));
