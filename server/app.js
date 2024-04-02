@@ -35,6 +35,7 @@ app.get('/video', (req, res) => {
         videoPath = '../public/' + videoFile;
     }
 
+    console.log(videoPath + " " + fs.existsSync(videoPath));
     fs.createReadStream(videoPath).pipe(res);
 })
 
