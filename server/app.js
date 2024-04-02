@@ -36,6 +36,11 @@ app.get('/video', (req, res) => {
     }
 
     console.log(videoPath + " " + fs.existsSync(videoPath));
+    
+    const headers = {
+        'Content-Type': 'video/mp4'
+    }    
+    res.writeHead(206, headers)
     fs.createReadStream(videoPath).pipe(res);
 })
 
