@@ -31,7 +31,7 @@ app.get('/video', (req, res) => {
     console.log("A");
     const videoSize = fs.statSync(videoPath, {}).size;
 
-    console.log("B");
+    console.log("B " + videoSize);
     const range = req.headers.range;
     if (range) {
         console.log("C");
