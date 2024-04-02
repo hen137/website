@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require('express');
 const fs = require('fs');
 
@@ -23,8 +25,16 @@ app.get("/", (req, res) => {
 })
 
 app.get('/video', (req, res) => {
-    const video_path = '../public/Mindful_Consumer_Podcast_Ep3video.mp4';
-    fs.createReadStream(video_path).pipe(res);
+    const videoFile = 'Mindful_Consumer_Podcast_Ep3video.mp4';
+    let videoPath = '';
+    
+    if (process.env.NODE_ENV == "production") {
+        videoPath = './build/' + videoFile;
+    } else {
+        videoPath = '../public/' + videoFile;
+    }
+
+    fs.createReadStream(videoPath).pipe(res);
 })
 
 app.listen(PORT, () => console.log("Server started"));
