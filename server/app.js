@@ -28,6 +28,7 @@ app.get('/video', (req, res) => {
     const videoFile = 'Mindful_Consumer_Podcast_Ep3video.mp4';
     let videoPath = '';
     
+    console.log(process.env.NODE_ENV)
     if (process.env.NODE_ENV == "production") {
         videoPath = './build/' + videoFile;
     } else {
