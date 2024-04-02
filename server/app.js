@@ -33,7 +33,7 @@ app.get('/video', (req, res) => {
         videoPath = '../public/' + videoFile;
     }
     console.log("A " + process.env.NODE_ENV);
-    const videoSize = fs.statSync(videoPath, {}).size;
+    const videoSize = fs.statSync(videoPath).size;
 
     console.log("B " + videoSize);
     const range = req.headers.range;
