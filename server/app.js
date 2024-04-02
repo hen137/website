@@ -56,7 +56,7 @@ app.get('/video', (req, res) => {
     } else {
         console.log("D");
         const head = {
-            'Content-Length': fileSize,
+            'Content-Length': videoSize,
             'Content-Type': 'video/mp4',
         };
 
