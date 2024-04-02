@@ -32,10 +32,13 @@ app.get('/video', (req, res) => {
     } else {
         videoPath = '../public/' + videoFile;
     }
+    console.log("A");
     const videoSize = fs.statSync(videoPath, {}).size;
 
+    console.log("B");
     const range = req.headers.range;
     if (range) {
+        console.log("C");
         const parts = range.replace(/bytes=/, '').split('-');
         const start = parseInt(parts[0], 10);
         const end = parts[1] ? parseInt(parts[1], 10) : videoSize - 1;
@@ -51,6 +54,7 @@ app.get('/video', (req, res) => {
         res.writeHead(206, head);
         fs.createReadStream(videoPath, { start, end }).pipe(res);
     } else {
+        console.log("D");
         const head = {
             'Content-Length': fileSize,
             'Content-Type': 'video/mp4',
