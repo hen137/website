@@ -27,7 +27,11 @@ app.get("/", (req, res) => {
 app.get('/video', (req, res) => {
     const videoFile = 'Mindful_Consumer_Podcast_Ep3video.mp4';
     let videoPath = '';
-    videoPath = '../public/' + videoFile;
+    if (process.env.NODE_ENV == "production") {
+        videoPath = './build/' + videoFile;
+    } else {
+        videoPath = '../public/' + videoFile;
+    }
     console.log("A");
     const videoSize = fs.statSync(videoPath, {}).size;
 
