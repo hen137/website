@@ -25,42 +25,41 @@ app.get("/", (req, res) => {
 })
 
 app.get('/video', async (req, res) => {
-    const range = req.headers.range;
-
-    if (!range) {
-        res.status(400).send("Requires Range Header");
-        return;
+    const videoFile = 'Mindful_Consumer_Podcast_Ep3video.mp4';
+    let videoPath = '';
+    if (process.env.NODE_ENV == "production") {
+        videoPath = './build/' + videoFile;
+    } else {
+        videoPath = '../public/' + videoFile;
     }
+    const videoSize = fs.statSync(videoPath).size;
 
-    try {
-        const videoFile = 'Mindful_Consumer_Podcast_Ep3video.mp4';
-        let videoPath = '';
-        if (process.env.NODE_ENV == "production") {
-            videoPath = './build/' + videoFile;
-        } else {
-            videoPath = '../public/' + videoFile;
-        }
-        const videoSize = await fs.stat(videoPath).size;
+    const range = req.headers.range;
+    if (range) {
+        const parts = range.replace(/bytes=/, '').split('-');
+        const start = parseInt(parts[0], 10);
+        const end = parts[1] ? parseInt(parts[1], 10) : videoSize - 1;
+        const chunksize = end - start + 1;
 
-        const start = Number(range.replace(/ytes=/, '').split('-')[0]);
-        const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
-
-        const contentLength = end - start + 1;
-        const headers = {
+        const head = {
             'Content-Range': `bytes ${start}-${end}/${videoSize}`,
             'Accept-Ranges': 'bytes',
-            'Content-Length': contentLength,
+            'Content-Length': chunksize,
             'Content-Type': 'video/mp4',
         };
-        res.writeHead(206, headers)
-        fs.createReadStream(videoPath).pipe(res);
-    } catch (err) {
-        console.error(err);
-        res.sendStatus(500);
+
+        res.writeHead(206, head);
+        fs.createReadStream(videoPath, { start, end }).pipe(res);
+    } else {
+        const head = {
+            'Content-Length': fileSize,
+            'Content-Type': 'video/mp4',
+        };
+
+        res.writeHead(200, head);
+        fs.createReadStream(path).pipe(res);
     }
-
-
-})
+});
 
 app.listen(PORT, () => console.log("Server started"));
 
