@@ -61,7 +61,7 @@ app.get('/video', (req, res) => {
         };
 
         res.writeHead(200, head);
-        fs.createReadStream(path).pipe(res);
+        fs.createReadStream(videoPath).pipe(res);
     }
 });
 
