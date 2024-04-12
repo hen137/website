@@ -25,8 +25,8 @@ app.get("/", (req, res) => {
 })
 
 app.get('/video', (req, res) => {
-    const videoFile = 'Mindful_Consumer_Podcast_Ep3video.mp4';
-    let  videoPath = './build/' + videoFile;
+    const videoFile = '/media/The Most Misunderstood Concept in Physics.mp4';
+    let  videoPath = './build' + videoFile;
     console.log("A " + process.env.NODE_ENV);
     const videoSize = fs.statSync(videoPath).size;
 
