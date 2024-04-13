@@ -2,12 +2,13 @@ require("dotenv").config();
 
 const express = require('express');
 const fs = require('fs');
-const aws = require('aws-sdk');
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
 
 const app = express();
 
 const PORT = process.env.PORT || 8080;
-const s3 = new aws.S3();
+
+const s3c = new  S3Client({region: 'us-east-2'});
 
 app.use(express.static("build"));
 
@@ -63,20 +64,17 @@ app.get('/video', (req, res) => {
     }
 });
 
-app.get('/videoS3', (req, res) => {
+app.get('/videoS3', async (req, res) => {
+    const command = new GetObjectCommand({
+        Bucket: 'dmosh-media',
+        Key: 'Mindful_Consumer_Podcast_Ep1video.mp4',
+        Credentials: {
+            
+        }
+    });
+    const item = await s3c.send(command);
+    item.Body.pipe(res);
 
-    const bucket = 'dmosh-media';
-    const key = 'Mindful_Consumer_Podcast_Ep1video.mp4';
-
-    var params = {
-        Bucket: bucket,
-        Key: key
-    };
-
-    s3.getObject(params, (err, data) => {
-        if (err) console.log(err, err.stack);
-        else console.log(data);
-    }).createReadStream(res);
 }); 
 
 
