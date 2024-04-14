@@ -5,10 +5,6 @@
     overflow-y: hidden;
 }
 
-.main-container>*{
-    /* border: blue solid thin; */
-}
-
 .invert {
     mix-blend-mode: difference;
     color: #bdbdbd;
@@ -30,18 +26,18 @@
     font-family: 'Orbitron';
 }
 
-.socials {
+/* .socials {
 
-}
+} */
 
 .divider {
     margin: 0;
     width: 90vw;
 }
 
-.main-body{
+/* .main-body{
 
-}
+} */
 
 .nav {
     text-decoration: none;
