@@ -1,14 +1,23 @@
-require("dotenv").config();
+// require("dotenv").config();
 
-const express = require('express');
-const fs = require('fs');
-const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+import express from 'express';
+import fs from 'fs';
+import got from 'got';
+import { S3Client, GetObjectAclCommand } from '@aws-sdk/client-s3';
+import dotenv from 'dotenv';
+
+// const express = require('express');
+// const fs = require('fs');
+// const got = require('got');
+// const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+
+dotenv.config();
 
 const app = express();
 
 const PORT = process.env.PORT || 8080;
 
-const s3c = new  S3Client({region: 'us-east-2'});
+const s3c = new S3Client({ region: 'us-east-2' });
 
 app.use(express.static("build"));
 
@@ -69,14 +78,26 @@ app.get('/videoS3', async (req, res) => {
         Bucket: 'dmosh-media',
         Key: 'Mindful_Consumer_Podcast_Ep1video.mp4',
         Credentials: {
-            
+
         }
     });
     const item = await s3c.send(command);
     item.Body.pipe(res);
 
-}); 
+});
 
+app.get('/videoURL', (req, res) => {
+    const downloadStream = got.stream("https://dmosh-media.s3.us-east-2.amazonaws.com/Mindful_Consumer_Podcast_Ep1video.mp4");
+
+    downloadStream.on("downloadProgress", ({ transferred, total, percent }) => {
+        const percentage = Math.round(percent * 100);
+        console.error(`progress: ${transferred}/${total} (${percentage}%)`);
+    }).on("error", (error) => {
+        console.error(`Download failed: ${error.message}`);
+    });
+
+    downloadStream.pipe(res);
+});
 
 app.listen(PORT, () => console.log("Server started"));
 

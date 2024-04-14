@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
+
+
+body {
+    margin: 0;
+}
+
+.size-control{
+    aspect-ratio: 1920 / 1080;
+    min-width: 1000px;
+    height: auto;
+    width: 100%;
+}
+
+.landing-container {
+    overflow-x: hidden;
+    /* width: 100vw; */
+    padding: 0;
+}
+
+.video-stream {
+    /* width: 100%; */
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+}
